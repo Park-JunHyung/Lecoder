@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
         toolbarLayout.setTitleEnabled(true);
         toolbar= (Toolbar) findViewById(R.id.toolbar_main);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("나만의 강의록, LECORDER");
+        getSupportActionBar().setTitle("LECODER");
         toolbarLayout.setExpandedTitleTextAppearance(R.style.ExpandedAppBar);
         toolbarLayout.setCollapsedTitleTextAppearance(R.style.CollapsedAppBar);
         //---툴바 설정

@@ -1,51 +1,30 @@
 package com.lecoder.team9.lecoder;
 
-import android.Manifest;
-import android.app.ProgressDialog;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.net.Uri;
-import android.os.Build;
-import android.os.Bundle;
-import android.os.Environment;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.content.FileProvider;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-
-import android.widget.EditText;
-import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import java.util.ArrayList;
-import java.util.Collections;
-
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.pm.PackageManager;
+import android.content.Intent;
+import android.graphics.Color;
 import android.os.AsyncTask;
-import android.os.Build;
+import android.os.Bundle;
 import android.os.Environment;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.TextView;
 
 import java.io.File;
 import java.text.Collator;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -73,12 +52,12 @@ public class FileBrowserActivity extends AppCompatActivity {
         setContentView(R.layout.activity_file_browser);
         toolbar = (Toolbar) findViewById(R.id.fileBrowserToobar);
         toolbar.setTitle("FileBrowser");
+        toolbar.setTitleTextColor(Color.WHITE);
         setSupportActionBar(toolbar);
         textView = (TextView) findViewById(R.id.textView_debug);
         setupList();
         setupAdapter();
         setupFilter();
-        setupPermission();
         intent=getIntent();
      /*   listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -89,23 +68,6 @@ public class FileBrowserActivity extends AppCompatActivity {
         });
         */
 
-    }
-
-    private void setupPermission() {
-        //check for permission
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (ContextCompat.checkSelfPermission(this,
-                    Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
-                //ask for permission
-                requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 0);
-            }
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[], int[] grantResults) {
-        setupAdapter();
     }
 
     private void setupList() {
@@ -133,8 +95,6 @@ public class FileBrowserActivity extends AppCompatActivity {
         public void bindView(View view, MyListItem item) {
             TextView name = (TextView) view.findViewById(R.id.name_saved);
             name.setText(item.name);
-            CheckBox cb = (CheckBox) view.findViewById(R.id.checkBox_saved);
-            cb.setChecked(item.checked);
         }
 
         @Override
@@ -147,12 +107,6 @@ public class FileBrowserActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View view) {
                     MyListItem item = listDispItems.get(pos);
-                    //item.checked = !item.checked;
-                    //if( item.checked ) totalSelected++;
-                    //item.selectedNumber=totalSelected;
-                    //Toast.makeText(MainActivity.this,"2: Click "+pos+ "th " + item.checked + " "+totalSelected,Toast.LENGTH_SHORT).show();
-                    //printDebug();
-                    //bindView(parView, item);
                     itemClick(item.name, item.path);
                 }
             });
@@ -160,7 +114,7 @@ public class FileBrowserActivity extends AppCompatActivity {
             return retView;
         }
 
-        public void fillter(String searchText) {
+        public void filter(String searchText) {
             listDispItems.clear();
             totalSelected = 0;
             for (int i = 0; i < listAllItems.size(); i++) {
@@ -230,9 +184,10 @@ public class FileBrowserActivity extends AppCompatActivity {
             listView.setAdapter(listadapter);
 
             String searchText = editView.getText().toString();
-            if (listadapter != null) listadapter.fillter(searchText);
-
-            textView.setText("Location: " + CurPath);
+            if (listadapter != null) listadapter.filter(searchText);
+            int index=CurPath.indexOf("Lecoder");
+            String newPath=CurPath.substring(index);
+            textView.setText("Location: " + newPath);
         }
 
         private final Comparator<MyListItem> nameComparator
@@ -265,7 +220,7 @@ public class FileBrowserActivity extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable s) {
                 String searchText = editView.getText().toString();
-                if (listadapter != null) listadapter.fillter(searchText);
+                if (listadapter != null) listadapter.filter(searchText);
             }
         });
     }
@@ -312,17 +267,6 @@ public class FileBrowserActivity extends AppCompatActivity {
         return "";
     }
 
-    private void printDebug() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("Count:" + getSelectedItemCount() + "\n");
-        sb.append("getSelectedItem:" + getSelectedItem() + "\n");
-        sb.append("getSelectedItems:");
-        List<String> data = getSelectedItems();
-        for (int i = 0; i < data.size(); i++) {
-            String item = data.get(i);
-            sb.append(item + ",");
-        }
-    }
         //textView.setText(sb.toString());
         @Override
         public void onBackPressed() {
@@ -370,8 +314,10 @@ public class FileBrowserActivity extends AppCompatActivity {
 
         if (!root.endsWith("/")) root = root + "/";
         if (!root.equals(dirPath)) {
-            itemFiles.add(".");
-            pathFiles.add(f.getParent());
+            if (!dirPath.endsWith("/Lecoder/")){
+                itemFiles.add("...뒤로");
+                pathFiles.add(f.getParent());
+            }
         }
 
         for (int i = 0; i < files.length; i++) {
@@ -387,89 +333,38 @@ public class FileBrowserActivity extends AppCompatActivity {
 
     private void itemClick(String name, String path) {
         File file = new File(path);
+        boolean isFastLecture=path.contains("Lecoder/빠른녹음");
         if (file.isDirectory()) {
             if (file.canRead()) {
                 CurPath = path;
                 setupAdapter();
             } else {
-                if(file.getName().endsWith(".mp3") || file.getName().endsWith(".mp4") || file.getName().endsWith(".m4a") || file.getName().endsWith(".3gp") || file.getName().endsWith(".wav") || file.getName().endsWith(".ogg"))
-                {
-                    Intent music = new Intent();
-                    music.setAction(Intent.ACTION_VIEW);
-                    music.setDataAndType(
-                        FileProvider.getUriForFile(this, getApplicationContext().getPackageName() + ".fileprovider", file)
-                        , "audio/*");
-                    music.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                    startActivity(music);
-                } else if(file.getName().endsWith(".txt")){
-                    Intent text = new Intent();
-                    text.setAction(Intent.ACTION_VIEW);
-                    text.setDataAndType(
-                            FileProvider.getUriForFile(this, getApplicationContext().getPackageName() + ".fileprovider", file)
-                            , "text/*");
-                    text.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                    startActivity(text);
-                } else if(file.getName().endsWith(".jpg") || file.getName().endsWith(".gif") || file.getName().endsWith(".png") || file.getName().endsWith(".bmp"))
-                {
-                    Intent image = new Intent();
-                    image.setAction(Intent.ACTION_VIEW);
-                    image.setDataAndType(
-                            FileProvider.getUriForFile(this, getApplicationContext().getPackageName() + ".fileprovider", file)
-                            , "image/*");
-                    image.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                    startActivity(image);
-                } else if (file.getName().endsWith(".pdf") || file.getName().endsWith(".ppt")){
-                    Intent pdfandppt = new Intent();
-                    pdfandppt.setAction(Intent.ACTION_VIEW);
-                    pdfandppt.setDataAndType(
-                            FileProvider.getUriForFile(this, getApplicationContext().getPackageName() + ".fileprovider", file)
-                            , "application/*");
-                    pdfandppt.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                    startActivity(pdfandppt);
-                } else {
-                    Toast.makeText(getApplicationContext(), "열 수 없는 파일 형식입니다.", Toast.LENGTH_LONG).show();
+                if(file.getName().endsWith(".mp4")) {
+                    playLecture(isFastLecture,path);
                 }
-
             }
         } else {
-            if(file.getName().endsWith(".mp3") || file.getName().endsWith(".mp4") || file.getName().endsWith(".m4a") || file.getName().endsWith(".3gp") || file.getName().endsWith(".wav") || file.getName().endsWith(".ogg"))
-            {
-                Intent music = new Intent();
-                music.setAction(Intent.ACTION_VIEW);
-                music.setDataAndType(
-                        FileProvider.getUriForFile(this, getApplicationContext().getPackageName() + ".fileprovider", file)
-                        , "audio/*");
-                music.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                startActivity(music);
-            } else if(file.getName().endsWith(".txt")){
-                Intent text = new Intent();
-                text.setAction(Intent.ACTION_VIEW);
-                text.setDataAndType(
-                        FileProvider.getUriForFile(this, getApplicationContext().getPackageName() + ".fileprovider", file)
-                        , "text/*");
-                text.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                startActivity(text);
-            } else if(file.getName().endsWith(".jpg") || file.getName().endsWith(".gif") || file.getName().endsWith(".png") || file.getName().endsWith(".bmp"))
-            {
-                Intent image = new Intent();
-                image.setAction(Intent.ACTION_VIEW);
-                image.setDataAndType(
-                        FileProvider.getUriForFile(this, getApplicationContext().getPackageName() + ".fileprovider", file)
-                        , "image/*");
-                image.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                startActivity(image);
-            } else if (file.getName().endsWith(".pdf") || file.getName().endsWith(".ppt")){
-                Intent pdfandppt = new Intent();
-                pdfandppt.setAction(Intent.ACTION_VIEW);
-                pdfandppt.setDataAndType(
-                        FileProvider.getUriForFile(this, getApplicationContext().getPackageName() + ".fileprovider", file)
-                        , "application/*");
-                pdfandppt.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                startActivity(pdfandppt);
-            } else {
-                Toast.makeText(getApplicationContext(), "열 수 없는 파일 형식입니다.", Toast.LENGTH_LONG).show();
+            if(file.getName().endsWith(".mp4")) {
+                playLecture(isFastLecture,path);
             }
         }
+    }
+
+    private void playLecture(boolean isFastLecture,String path) {
+
+        int index=path.indexOf("Lecoder");
+        String newPath=path.substring(index);
+        String[] newArray=newPath.split("/");
+        Intent intent=new Intent(getApplicationContext(),PlayActivity.class);
+        String playClass=(isFastLecture?"":newArray[2]);
+        String playName=(isFastLecture?newArray[2]:newArray[3]);
+        String playType=newArray[1];
+        String playDate=playName.substring(0,4)+"/"+playName.substring(4,6)+"/"+playName.substring(6,8);
+        intent.putExtra("playClass",playClass);
+        intent.putExtra("playType",playType);
+        intent.putExtra("playDate",playDate);
+        intent.putExtra("playName",playName);
+        startActivity(intent);
     }
 
 

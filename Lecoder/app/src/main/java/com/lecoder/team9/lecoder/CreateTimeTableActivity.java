@@ -189,6 +189,7 @@ public class CreateTimeTableActivity extends AppCompatActivity {
                     }
                     listView.setAdapter(adapter);
                     initRegister();
+                    finish();
                 }
 
             }

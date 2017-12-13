@@ -28,7 +28,7 @@
 
             <ImageView
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 app:srcCompat="@android:drawable/ic_menu_search"
                 android:id="@+id/imageView" />
 
@@ -50,12 +50,24 @@
             <TextView
                 android:text="TextView"
                 android:layout_width="match_parent"
-                android:layout_height="102dp"
+                android:layout_height="70dp"
+                android:padding="18dp"
+                android:textSize="15dp"
                 android:id="@+id/textView_debug"
-                android:maxLines="5" />
+                android:maxLines="3" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_marginRight="20dp"
+                android:layout_marginLeft="20dp"
+                android:background="#0c0c0c"
+                android:layout_height="1px"/>
             <ListView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_margin="20dp"
+                android:divider="@android:color/transparent"
+                android:dividerHeight="5dp"
+                android:padding="10dp"
                 android:id="@+id/list1"
                 />
 
