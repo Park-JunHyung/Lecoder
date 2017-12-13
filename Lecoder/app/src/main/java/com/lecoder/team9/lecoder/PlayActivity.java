@@ -86,6 +86,7 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
         gridBtn = (ImageButton) findViewById(R.id.gridBtn);
         addBtn = (ImageButton) findViewById(R.id.addBtn);
         playingTime= (TextView) findViewById(R.id.time_playing);
+        //확대 다이얼로그
         totalTime= (TextView) findViewById(R.id.time_total);
         subjectDate= (TextView) findViewById(R.id.play_subjectDate);
         subjectClass = (TextView) findViewById(R.id.play_subjectClass);
@@ -93,7 +94,6 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
         showText = (TextView) findViewById(R.id.textShow);
         showTextPage = (TextView) findViewById(R.id.textShowPage);
 
-        //확대 다이얼로그
         dialog=new Dialog(this);
         dialog.setContentView(R.layout.play_dialog);
         dialogTitle=dialog.findViewById(R.id.gridTitle);

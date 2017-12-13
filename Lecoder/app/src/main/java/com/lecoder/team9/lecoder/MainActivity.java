@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
+    private static final int REQUEST_FILE = 11;
     FloatingActionButton plusBtn, fastRecordBtn, lectureRecordBtn;
     boolean isClickedPlusBtn=false;
     Context mContext;
@@ -322,7 +323,21 @@ public class MainActivity extends AppCompatActivity {
             Intent intent=new Intent(this, SettingActivity.class);
             startActivity(intent);
             overridePendingTransition(R.anim.start_enter, R.anim.start_exit);
+        }else if(item.getItemId()==R.id.fileBrowserBtn){
+            Intent intent=new Intent(this,FileBrowserActivity.class);
+            startActivityForResult(intent,REQUEST_FILE);
+            overridePendingTransition(R.anim.start_enter, R.anim.start_exit);
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode==REQUEST_FILE){
+            if (resultCode==1){
+
+            }
+        }
     }
 }

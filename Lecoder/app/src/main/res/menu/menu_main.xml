@@ -2,6 +2,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
+        android:id="@+id/fileBrowserBtn"
+        android:icon="@drawable/filebrowser"
+        app:showAsAction="always"
+        android:title="탐색기"/>
+    <item
         android:id="@+id/calendarBtn"
         android:icon="@drawable/timetable"
         app:showAsAction="always"
@@ -10,7 +15,7 @@
         android:id="@+id/settingsBtn"
         android:icon="@drawable/settings"
         app:showAsAction="always"
-        android:title="시간표"/>
+        android:title="설정"/>
 
 
 </menu>
