@@ -59,6 +59,7 @@ public class FileBrowserActivity extends AppCompatActivity {
     ArrayList<MyListItem> listDispItems = new ArrayList<MyListItem>();
     ListView listView;
     Toolbar toolbar;
+    Intent intent;
     private String root = Environment.getExternalStorageDirectory().getAbsolutePath();
     private String CurPath = Environment.getExternalStorageDirectory().getPath()+"/Lecoder/";
     private ArrayList<String> itemFiles = new ArrayList<String>();
@@ -78,8 +79,7 @@ public class FileBrowserActivity extends AppCompatActivity {
         setupAdapter();
         setupFilter();
         setupPermission();
-
-
+        intent=getIntent();
      /*   listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
@@ -142,18 +142,6 @@ public class FileBrowserActivity extends AppCompatActivity {
             View retView = super.getView(position, convertView, parent);
             final int pos = position;
             final View parView = retView;
-            CheckBox cb = (CheckBox) retView.findViewById(R.id.checkBox_saved);
-            cb.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    MyListItem item = listDispItems.get(pos);
-                    item.checked = !item.checked;
-                    if (item.checked) totalSelected++;
-                    item.selectedNumber = totalSelected;
-                    Toast.makeText(FileBrowserActivity.this, "1: Click " + pos + "th " + item.checked + " " + totalSelected, Toast.LENGTH_SHORT).show();
-                    printDebug();
-                }
-            });
             TextView name = (TextView) retView.findViewById(R.id.name_saved);
             name.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -348,7 +336,7 @@ public class FileBrowserActivity extends AppCompatActivity {
             {
                 backPressedTime = tempTime;
                 AlertDialog.Builder alert_confirm = new AlertDialog.Builder(FileBrowserActivity.this);
-                alert_confirm.setMessage("프로그램을 종료 하시겠습니까?").setCancelable(false).setPositiveButton("취소",
+                alert_confirm.setMessage("뒤로 가시겠습니까?").setCancelable(false).setPositiveButton("취소",
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
